@@ -15,10 +15,10 @@ SHELL_FILE = $(RAYLIB_DIR)/src/minshell.html
 WEB_LIB = $(RAYLIB_DIR)/src/libraylib.web.a
 
 # Emscripten flags
-EMCC_CFLAGS = -Wall -std=c++14 -D_DEFAULT_SOURCE -Wno-missing-braces -Wunused-result -Os \
-	-I. -I $(RAYLIB_DIR)/src -I $(RAYLIB_DIR)/src/external
+EMCC_CFLAGS = -Wall -D_DEFAULT_SOURCE -Wno-missing-braces -Wunused-result -Os \
+	-I include -I $(RAYLIB_DIR)/src -I $(RAYLIB_DIR)/src/external
 
-EMCC_LDFLAGS = -L. -L $(RAYLIB_DIR)/src \
+EMCC_LDFLAGS = -L lib -L $(RAYLIB_DIR)/src \
 	-s USE_GLFW=3 \
 	-s ASYNCIFY \
 	-s TOTAL_MEMORY=67108864 \
