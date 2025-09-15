@@ -4,59 +4,61 @@
 #include <memory>
 #include <unordered_map>
 #include <string>
+#include <iostream>
 #include "raylib.h"
 
 class TextureManager {
 public:
-
-    // Resource managers should NOT be copyable
     TextureManager(const TextureManager& other) = delete;
     TextureManager(TextureManager&& other) = delete;
     TextureManager& operator=(const TextureManager& other) = delete;
 
-    ~TextureManager() {
-        for (auto& [key, texture] : textures) {
-            UnloadTexture(texture);
-        }
-    }
+    ~TextureManager() {}
 
-    static Texture2D load(const std::string &filename) {
+    static std::shared_ptr<Texture2D> load(const std::string &filename) {
         auto& textureManager = instance();
+        std::cout << "Loading texture: " << filename << std::endl;
 
-        // Check if the resource is already loaded
+        // Already loaded?
         auto resIter = textureManager.textures.find(filename);
-        if(resIter != textureManager.textures.end()) {
-            return resIter->second;
+        if (resIter != textureManager.textures.end()) {
+            if (auto texPtr = resIter->second.lock()) {
+                std::cout << "Texture already loaded" << std::endl;
+                return texPtr;
+            }
         }
-        
-        Texture2D texture = LoadTexture(filename.c_str());
-        textureManager.textures[filename] = texture;
 
-        return texture;
+        // Allocate Texture2D on heap, but don't call delete later
+        Texture2D tex = LoadTexture(filename.c_str());
+        if (tex.id == 0) {
+            std::cerr << "Failed to load texture: " << filename << std::endl;
+            return nullptr;
+        }
+
+        std::shared_ptr<Texture2D> texturePtr(
+            new Texture2D(tex),
+            [](Texture2D* tex) {
+                if (tex) {
+                    std::cout << "Unloading texture: " << tex->id << std::endl;
+                    UnloadTexture(*tex);  // frees GPU data
+                    delete tex;           // frees the struct itself
+                }
+            }
+        );
+
+        textureManager.textures[filename] = texturePtr;
+        std::cout << "Texture loaded successfully" << std::endl;
+        return texturePtr;
     }
 
-    static void unload(const std::string &filename) {
-        auto& textureManager = instance();
-
-        // Check if the resource is already loaded
-        auto it = textureManager.textures.find(filename);
-        if(it != textureManager.textures.end()) {
-            UnloadTexture(it->second);
-            textureManager.textures.erase(it);
-        }
-    }
-
-    static TextureManager& instance(){
+    static TextureManager& instance() {
         static TextureManager textureManager;
         return textureManager;
     }
 
 private:
-    // The constructor is private so that only the single instance can be used
     TextureManager() {}
-
-    // The map of resources that have been loaded.  
-    std::unordered_map<std::string, Texture2D> textures;
+    std::unordered_map<std::string, std::weak_ptr<Texture2D>> textures;
 };
 
 #endif
