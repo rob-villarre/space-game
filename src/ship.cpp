@@ -1,6 +1,7 @@
 #include "ship.h"
 #include "raylib.h"
-#include "texture_manager.h"
+// #include "texture_manager.h"
+#include "resource_manager.h"
 #include <cmath>
 #include <algorithm>
 #include <iostream>
@@ -76,7 +77,6 @@ void Ship::Draw() {
     Texture2D texture = *this->texture.get();
     Texture2D thrustTexture = *this->thrustTexture.get();
 
-    std::cout << thrust << std::endl;
     // Draw thrust
     if (thrust > 0) {
         float headingRad = heading * PI / 180.0;
@@ -88,17 +88,21 @@ void Ship::Draw() {
         // Random length between 1.0 and 3.0
         float randomLength = 1.0f + GetRandomValue(0, 100) / 100.0f;
 
-        DrawTexturePro(thrustTexture,
+        DrawTexturePro(
+            thrustTexture,
             Rectangle{0, 0, (float)thrustTexture.width, (float)thrustTexture.height},
             Rectangle{engineX, engineY, (float)thrustTexture.width * 2.0f, (float)thrustTexture.height * randomLength},
-            Vector2{(float)thrustTexture.width, (float)thrustTexture.height}, heading, WHITE
+            Vector2{(float)thrustTexture.width, (float)thrustTexture.height}, heading,
+            WHITE
         );
     }
 
     // Draw Ship
-    DrawTexturePro(texture, 
+    DrawTexturePro(
+        texture, 
         Rectangle{0, 0, (float)texture.width, (float)texture.height}, 
         Rectangle{position.x, position.y, (float)texture.width*2.0f, (float)texture.height*2.0f}, 
-        Vector2{(float)texture.width, (float)texture.height}, heading, WHITE
+        Vector2{(float)texture.width, (float)texture.height}, heading,
+        WHITE
     );
 }
