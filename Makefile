@@ -25,7 +25,7 @@ EMCC_LDFLAGS = -L lib -L $(RAYLIB_DIR)/src \
 	-s FORCE_FILESYSTEM=1 \
 	--preload-file ./src/assets \
 	--shell-file $(SHELL_FILE) \
-	$(WEB_LIB) -DPLATFORM_WEB \
+	$(WEB_LIB) -D PLATFORM_WEB \
 	-s 'EXPORTED_FUNCTIONS=["_free","_malloc","_main"]' \
 	-s EXPORTED_RUNTIME_METHODS=ccall
 

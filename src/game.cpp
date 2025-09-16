@@ -45,16 +45,10 @@ void Game::Draw() {
 
 void Game::UpdateDrawFrame() {
     BeginDrawing();
-    ClearBackground(RAYWHITE);
+    ClearBackground(BLACK);
 
-    // Texture2D temp = *texture.get();
-    // // DrawTexturePro(texture, screenWidth/2 - texture.width/2, screenHeight/2 - texture.height/2, WHITE);
-    // DrawTexturePro(temp, 
-    //   Rectangle{0, 0, (float)temp.width, (float)temp.height}, 
-    //   Rectangle{screenWidth/2.0f - (temp.width*4.0f)/2.0f, screenHeight/2.0f - (temp.height*4.0f)/2.0f, (float)temp.width*4.0f, (float)temp.height*4.0f}, 
-    //   Vector2{0, 0}, 0, WHITE);
     Update();
-    
+
     Draw();
     #if defined(PLATFORM_WEB)
         DrawText("Congrats!", 190, 200, 20, LIGHTGRAY);
