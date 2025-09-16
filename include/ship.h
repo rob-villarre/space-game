@@ -9,6 +9,7 @@ class Ship {
   private:
     std::shared_ptr<Texture2D> texture;
     std::shared_ptr<Texture2D> thrustTexture;
+    std::shared_ptr<Music> thrustSound;
     Vector2 position = {0, 0};
     Vector2 velocity = {0, 0};
     float speed = 0.0;
@@ -22,6 +23,13 @@ class Ship {
     const float drag = 80.0;
     const float radius = 20.0;
     const float mass = 300.0;
+
+    float thrustFlameLength = 0.5f;
+    float flameTimer = 0.0f;
+    bool isThrustSoundPlaying = false;
+    bool isFading = false;
+    float fadeTimer = 0.0f;
+    const float fadeTime = 0.3f;
 
   public:
     Ship();

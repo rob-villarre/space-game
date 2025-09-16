@@ -9,6 +9,9 @@
 Ship::Ship() {
     texture = TextureManager::load(std::string("src/assets/kenneyshmup/Ships/ship_0000.png"));
     thrustTexture = TextureManager::load(std::string("src/assets/kenneyshmup/Tiles/tile_0000.png"));
+    thrustSound = MusicManager::load(std::string("src/assets/thrust.mp3"));
+    thrustSound->looping = true;
+    UpdateMusicStream(*thrustSound.get());
 
     int screenWidth = GetScreenWidth();
     int screenHeight = GetScreenHeight();
@@ -68,6 +71,36 @@ void Ship::Update() {
 
     // update position based on velocity
     position = {position.x + velocity.x * dt, position.y + velocity.y * dt};
+    
+    Music thrustSound = *this->thrustSound.get();
+    if (thrust > 0) {
+        if (!isThrustSoundPlaying) {
+            PlayMusicStream(thrustSound);
+            SetMusicPitch(thrustSound, 0.8f + GetRandomValue(0, 40) / 100.0f);
+            SetMusicVolume(thrustSound, 1.0f);
+            isThrustSoundPlaying = true;
+            isFading = false;
+        }
+    } else {
+        if (isThrustSoundPlaying && !isFading) {
+            isFading = true;
+            fadeTimer = 0.0f;
+        }
+    }
+
+    if (isFading) {
+        fadeTimer += dt;
+        float volume = 1.0f - (fadeTimer / fadeTime);
+        if (volume <= 0.0f) {
+            StopMusicStream(thrustSound);
+            isThrustSoundPlaying = false;
+            isFading = false;
+        } else {
+            SetMusicVolume(thrustSound, volume);
+        }
+    }
+
+    UpdateMusicStream(thrustSound);
 
 
 }
@@ -85,13 +118,16 @@ void Ship::Draw() {
         float engineX = position.x - std::sin(headingRad) * engineOffset;
         float engineY = position.y + std::cos(headingRad) * engineOffset;
 
-        // Random length between 1.0 and 3.0
-        float randomLength = 1.0f + GetRandomValue(0, 100) / 100.0f;
+        flameTimer += GetFrameTime();
+        if (flameTimer >= 0.1f) {  // Update every 0.1 seconds
+            thrustFlameLength = 0.5f + GetRandomValue(0, 100) / 100.0f;
+            flameTimer = 0.0f;
+        }
 
         DrawTexturePro(
             thrustTexture,
             Rectangle{0, 0, (float)thrustTexture.width, (float)thrustTexture.height},
-            Rectangle{engineX, engineY, (float)thrustTexture.width * 2.0f, (float)thrustTexture.height * randomLength},
+            Rectangle{engineX, engineY, (float)thrustTexture.width * 2.0f, (float)thrustTexture.height * thrustFlameLength},
             Vector2{(float)thrustTexture.width, (float)thrustTexture.height}, heading,
             WHITE
         );

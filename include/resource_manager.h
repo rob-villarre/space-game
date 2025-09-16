@@ -5,8 +5,9 @@
 #include <memory>
 #include <unordered_map>
 #include <string>
+#include <stdexcept>
 
-template <typename T, T(*LoadFunc)(const char*), void(*UnloadFunc)(T)>
+template <typename T, T(*LoadFunc)(const char*), void(*UnloadFunc)(T), bool(*IsValidFunc)(T)>
 class ResourceManager {
 private:
     std::unordered_map<std::string, std::weak_ptr<T>> resources;
@@ -31,8 +32,9 @@ public:
         }
 
         T resource = LoadFunc(filename.c_str());
-        if (resource.id == 0) {
-            return nullptr;
+
+        if (!IsValidFunc(resource)) {
+            throw std::runtime_error("Failed to load resource: " + filename);
         }
 
         std::shared_ptr<T> ptr(
@@ -56,10 +58,8 @@ public:
 };
 
 // Predefined resource managers.
-// Manages loading of textures.
-typedef ResourceManager<Texture2D, LoadTexture, UnloadTexture> TextureManager;
-
-// Manages loading of sounds. 
-typedef ResourceManager<Sound, LoadSound, UnloadSound> SoundManager;
+typedef ResourceManager<Texture2D, LoadTexture, UnloadTexture, IsTextureValid> TextureManager;
+typedef ResourceManager<Sound, LoadSound, UnloadSound, IsSoundValid> SoundManager;
+typedef ResourceManager<Music, LoadMusicStream, UnloadMusicStream, IsMusicValid> MusicManager;
 
 #endif

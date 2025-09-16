@@ -13,6 +13,7 @@ Game::Game(Vector2 screenSize) {
     this->screenSize = screenSize;
 
     InitWindow(screenSize.x, screenSize.y, "raylib [core] example - basic window");
+    InitAudioDevice();
 
     this->ship = std::make_unique<Ship>();
 };
@@ -33,6 +34,7 @@ void Game::Start() {
     }
     #endif
 
+    CloseAudioDevice();
     CloseWindow();
 }
 
