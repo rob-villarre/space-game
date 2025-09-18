@@ -53,10 +53,10 @@ void Game::UpdateDrawFrame() {
     Update();
 
     Draw();
-    #if defined(PLATFORM_WEB)
-        DrawText("Congrats!", 190, 200, 20, LIGHTGRAY);
-    #else
-        DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-    #endif
+    // #if defined(PLATFORM_WEB)
+    //     DrawText("Congrats!", 190, 200, 20, LIGHTGRAY);
+    // #else
+    //     DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+    // #endif
     EndDrawing();
 };

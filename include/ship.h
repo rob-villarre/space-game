@@ -5,11 +5,14 @@
 #include <memory>
 #include <vector>
 
+class Bullet;
+
 class Ship {
   private:
     std::shared_ptr<Texture2D> texture;
     std::shared_ptr<Texture2D> thrustTexture;
     std::shared_ptr<Music> thrustSound;
+    std::shared_ptr<Sound> fireSound;
     Vector2 position = {0, 0};
     Vector2 velocity = {0, 0};
     float speed = 0.0;
@@ -30,6 +33,12 @@ class Ship {
     bool isFading = false;
     float fadeTimer = 0.0f;
     const float fadeTime = 0.3f;
+
+    std::vector<std::unique_ptr<Bullet>> bullets;
+    float lastFireTime = 0.0f;
+    const float fireRate = 0.4f;
+
+    void FireBullet();
 
   public:
     Ship();

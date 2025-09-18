@@ -1,6 +1,6 @@
 #include "ship.h"
 #include "raylib.h"
-// #include "texture_manager.h"
+#include "bullet.h"
 #include "resource_manager.h"
 #include <cmath>
 #include <algorithm>
@@ -9,9 +9,12 @@
 Ship::Ship() {
     texture = TextureManager::load(std::string("src/assets/kenneyshmup/Ships/ship_0000.png"));
     thrustTexture = TextureManager::load(std::string("src/assets/kenneyshmup/Tiles/tile_0000.png"));
-    thrustSound = MusicManager::load(std::string("src/assets/thrust.mp3"));
+    thrustSound = MusicManager::load(std::string("src/assets/sounds/thrust.mp3"));
     thrustSound->looping = true;
-    UpdateMusicStream(*thrustSound.get());
+    SetMusicVolume(*thrustSound.get(), 0.25f);
+
+    fireSound = SoundManager::load(std::string("src/assets/sounds/fire.mp3"));
+    SetSoundVolume(*fireSound.get(), 0.25f);
 
     int screenWidth = GetScreenWidth();
     int screenHeight = GetScreenHeight();
@@ -40,6 +43,30 @@ void Ship::Update() {
     if (IsKeyDown(KEY_D)) {
         turnRate = 180.0;
     }
+    if (IsKeyDown(KEY_SPACE)) {
+        float currentTime = GetTime();
+        if (currentTime - lastFireTime >= fireRate) {
+            FireBullet();
+            lastFireTime = currentTime;
+            Sound fireSound = *this->fireSound.get();
+            PlaySound(fireSound);
+        }
+
+    }
+
+    // Update bullets
+    for (auto it = bullets.begin(); it != bullets.end();) {
+        (*it)->Update();
+        // Remove bullets that are off-screen
+        Vector2 bulletPos = (*it)->GetPosition();
+        if (bulletPos.x < -50 || bulletPos.x > GetScreenWidth() + 50 || 
+            bulletPos.y < -50 || bulletPos.y > GetScreenHeight() + 50) {
+            it = bullets.erase(it);
+        } else {
+            ++it;
+        }
+    }
+
 
     float drag = this->drag * dt;
     if (drag > std::abs(speed)) {
@@ -102,7 +129,6 @@ void Ship::Update() {
 
     UpdateMusicStream(thrustSound);
 
-
 }
 
 void Ship::Draw() {
@@ -141,4 +167,21 @@ void Ship::Draw() {
         Vector2{(float)texture.width, (float)texture.height}, heading,
         WHITE
     );
+
+    // Draw bullets
+    for (const auto& bullet : bullets) {
+        bullet->Draw();
+    }
+}
+
+void Ship::FireBullet() {
+    // Calculate bullet spawn position (front of ship)
+    float headingRad = heading * DEG2RAD;
+    float spawnOffset = texture->height;
+    Vector2 bulletPos = {
+        position.x + std::sin(headingRad) * spawnOffset,
+        position.y - std::cos(headingRad) * spawnOffset
+    };
+    
+    bullets.push_back(std::make_unique<Bullet>(bulletPos, heading, nullptr));
 }

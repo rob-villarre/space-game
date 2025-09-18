@@ -7,7 +7,7 @@ OBJS = $(patsubst src/%.cpp, build/%.o, $(SRC))
 TARGET = bin/desktop/raylib.exe
 WEB_TARGET = bin/web/raylib.html
 
-CFLAGS = -I include -c -Wall
+CFLAGS = -I include -c -Wall -Wno-missing-braces -Wunused-result -Os
 LDFLAGS = -L lib -lraylib -lgdi32 -lwinmm
 
 RAYLIB_DIR ?= ../raylib
