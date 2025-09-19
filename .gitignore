@@ -45,3 +45,19 @@
 
 # bin
 /bin/*
+/build/*
+
+CMakeUserPresets.json
+# vcpkg build artifacts and temporary files
+/buildtrees/
+/packages/
+/installed/
+/downloads/
+/scripts/
+/toolsrc/
+/ports/
+/triplets/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+vcpkg_installed/*
