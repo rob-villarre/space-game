@@ -1,12 +1,7 @@
 {
   "dependencies": [
     {
-      "name": "raylib",
-      "platform": "emscripten"
-    },
-    {
-      "name": "raylib",
-      "platform": "windows"
+      "name": "raylib"
     }
   ]
 }

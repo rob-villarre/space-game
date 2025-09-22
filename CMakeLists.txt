@@ -1,11 +1,15 @@
 cmake_minimum_required(VERSION 3.24...3.30)
-project(raylib-game-template)
 
-# # Generate compile_commands.json
+project(space-game
+    VERSION 0.01
+    LANGUAGES CXX
+)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-# set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
-# # Dependencies
+# Dependencies
 find_package(raylib CONFIG REQUIRED)
 
 # Our Project
@@ -13,6 +17,8 @@ add_executable(${PROJECT_NAME})
 add_subdirectory(src)
 target_include_directories(${PROJECT_NAME} PRIVATE include)
 
+# Compiler warnings
+target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wno-missing-braces -Wunused-result)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
