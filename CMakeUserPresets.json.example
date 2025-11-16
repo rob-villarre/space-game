@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "desktop",
+      "inherits": "vcpkg-desktop",
+      "environment": {
+        "VCPKG_ROOT": "<VCPKG_ROOT_PATH>"
+      }
+    },
+    {
+      "name": "web",
+      "inherits": "vcpkg-web",
+      "environment": {
+        "VCPKG_ROOT": "<VCPKG_ROOT_PATH>",
+        "EMSDK_ROOT": "<EMSDK_ROOT_PATH>"
+      }
+    }
+  ]
+}
