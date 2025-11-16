@@ -31,21 +31,17 @@ if ("${PLATFORM}" STREQUAL "Web")
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/src/assets $<TARGET_FILE_DIR:${PROJECT_NAME}>/../src/assets
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/minshell.html $<TARGET_FILE_DIR:${PROJECT_NAME}>/../src/minshell.html
     )
-    #DEPENDS ${PROJECT_NAME}
 else()
     add_custom_command(
-        TARGET ${PROJECT_NAME} POST_BUILD
+        TARGET ${PROJECT_NAME} PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/src/assets $<TARGET_FILE_DIR:${PROJECT_NAME}>/src/assets
     )
-    #DEPENDS ${PROJECT_NAME}
 endif()
 
-#set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)
 
 # Web Configurations
 if ("${PLATFORM}" STREQUAL "Web")
-    # Tell Emscripten to build an example.html file.
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} \
         -s USE_GLFW=3 \
         -s WASM=1 \
@@ -59,7 +55,7 @@ if ("${PLATFORM}" STREQUAL "Web")
         -s TOTAL_STACK=32MB \
         --shell-file ./src/minshell.html"
     )
-    set(CMAKE_EXECUTABLE_SUFFIX ".html") # This line is used to set your executable to build with the emscripten html template so that you can directly open it.
+    set(CMAKE_EXECUTABLE_SUFFIX ".html")
 endif()
 
 # Checks if OSX and links appropriate frameworks (Only required on MacOS)
