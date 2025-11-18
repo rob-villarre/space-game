@@ -47,6 +47,8 @@ class Ship {
     void Update();
     void Draw();
 
+    std::vector<std::unique_ptr<Bullet>>& GetBullets();
+
 };
 
 #endif

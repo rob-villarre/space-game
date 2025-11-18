@@ -185,3 +185,7 @@ void Ship::FireBullet() {
     
     bullets.push_back(std::make_unique<Bullet>(bulletPos, heading, nullptr));
 }
+
+std::vector<std::unique_ptr<Bullet>>& Ship::GetBullets() {
+    return bullets;
+}

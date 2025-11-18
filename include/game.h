@@ -3,11 +3,12 @@
 
 #include "raylib.h"
 #include "ship.h"
+#include "asteroid.h"
 #include <memory>
 
 class Game {
 public:
-  Game(Vector2 screenSize);
+  Game(Vector2 initScreenSize);
   ~Game();
   void Start();
   void Update();
@@ -15,10 +16,8 @@ public:
   void UpdateDrawFrame();
 private:
   bool isRunning;
-  void processInput();
-  Vector2 screenSize;
   std::unique_ptr<Ship> ship;
-
+  std::unique_ptr<Asteroid> asteroid;
 };
 
 #endif
