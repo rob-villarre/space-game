@@ -1,6 +1,7 @@
 #include "game.h"
 #include "raylib.h"
 #include "resource_manager.h"
+#include "collision_layer.h"
 #include "bullet.h"
 #include <memory>
 #include <string>
@@ -52,21 +53,37 @@ void Game::Draw() {
 
 void Game::UpdateDrawFrame() {
     BeginDrawing();
+
     ClearBackground(BLACK);
 
     Update();
 
-    for (std::unique_ptr<Bullet>& b : ship->GetBullets()) {
-        bool isColliding = asteroid->GetCollider().CheckCollision(b->GetCollider());
-
-        b->GetCollider().DebugDraw(isColliding);
-    }
+    CheckCollisions();
 
     Draw();
-    // #if defined(PLATFORM_WEB)
-    //     DrawText("Congrats!", 190, 200, 20, LIGHTGRAY);
-    // #else
-    //     DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-    // #endif
+
     EndDrawing();
 };
+
+void Game::CheckCollisions() {
+    for (std::unique_ptr<Bullet>& b : ship->GetBullets()) {
+
+        if (!canCollide(
+            b->GetCollider().GetLayer(), asteroid->GetCollider().GetLayer(),
+            b->GetCollider().GetMask(), asteroid->GetCollider().GetMask())
+        ) {
+            continue;
+        }
+
+        bool isColliding = b->GetCollider().CheckCollision(asteroid->GetCollider());
+        if (!isColliding) {
+            b->GetCollider().DebugDraw(false);
+            continue;
+        }
+
+        if (isColliding) {
+            asteroid->GetCollider().DebugDraw(true);
+            b->GetCollider().DebugDraw(true);
+        }
+    }
+}

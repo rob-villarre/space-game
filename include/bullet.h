@@ -3,7 +3,7 @@
 
 #include "raylib.h"
 #include "ship.h"
-#include "rectangle_collider.h"
+#include "circle_collider.h"
 #include <memory>
 
 class Bullet {
@@ -17,7 +17,7 @@ private:
     float mass = 1.0f;
     Vector2 velocity;
 
-    std::unique_ptr<RectangleCollider> collider;
+    std::unique_ptr<CircleCollider> collider;
 
 public:
     Bullet(Vector2 position, float heading, std::shared_ptr<Ship> owner);
@@ -30,7 +30,7 @@ public:
     float GetHeading();
     Rectangle GetRect();
     void DrawHitbox(bool isColliding);
-    RectangleCollider& GetCollider();
+    CircleCollider& GetCollider();
 };
 
 #endif

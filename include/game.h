@@ -12,6 +12,7 @@ public:
   ~Game();
   void Start();
   void Update();
+  void CheckCollisions();
   void Draw();
   void UpdateDrawFrame();
 private:

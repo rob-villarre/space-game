@@ -20,6 +20,8 @@ Asteroid::Asteroid(Vector2 position, float speed, float angle, float size) : pos
     turnRate = GetRandomValue(-100, 100);
 
     collider = std::make_unique<CircleCollider>(position, radius);
+    collider->SetLayer(CollisionLayer::ASTEROID);
+    collider->SetMask(static_cast<uint32_t>(CollisionLayer::BULLET) | static_cast<uint32_t>(CollisionLayer::SHIP));
 }
 
 Asteroid::~Asteroid() { }

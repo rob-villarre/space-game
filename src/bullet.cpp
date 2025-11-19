@@ -15,7 +15,9 @@ Bullet::Bullet(Vector2 position, float heading, std::shared_ptr<Ship> owner) {
     float sin_heading = std::sin(rad_heading);
     velocity = { speed*sin_heading, -speed*cos_heading };
 
-    collider = std::make_unique<RectangleCollider>(position, Vector2{ (float)texture->width, (float)texture->height }, heading);
+    collider = std::make_unique<CircleCollider>(position, 5.0f);
+    collider->SetLayer(CollisionLayer::BULLET);
+    collider->SetMask(static_cast<uint32_t>(CollisionLayer::ASTEROID) | static_cast<uint32_t>(CollisionLayer::SHIP));
 }
 
 Bullet::~Bullet() { }
@@ -35,7 +37,7 @@ void Bullet::Draw() {
         texture,
         Rectangle{0, 0, (float)texture.width, (float)texture.height},
         Rectangle{position.x, position.y, (float)texture.width, (float)texture.height},
-        Vector2{(float)texture.width, (float)texture.height},
+        Vector2{(float)texture.width / 2.0f, (float)texture.height / 2.0f},
         heading,
         WHITE
     );
@@ -53,6 +55,6 @@ Rectangle Bullet::GetRect() {
     return Rectangle{position.x, position.y, (float)texture->width, (float)texture->height};
 }
 
-RectangleCollider& Bullet::GetCollider() {
+CircleCollider& Bullet::GetCollider() {
     return *collider;
 }

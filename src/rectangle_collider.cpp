@@ -4,7 +4,7 @@
 
 
 RectangleCollider::RectangleCollider(Vector2 position, Vector2 size, float rotation)
-    : position(position), size(size), rotation(rotation) {}
+    : Collider(position), size(size), rotation(rotation) {}
 
 bool RectangleCollider::CheckCollision(const Collider& other) const {
     return other.CollidesWith(*this);
@@ -34,9 +34,6 @@ Rectangle RectangleCollider::GetRect() const {
     return { position.x, position.y, size.x, size.y };
 }
 
-Vector2 RectangleCollider::GetPosition() const {
-    return position;
-}
 
 Vector2 RectangleCollider::GetSize() const {
     return size;
@@ -44,10 +41,6 @@ Vector2 RectangleCollider::GetSize() const {
 
 float RectangleCollider::GetRotation() const {
     return rotation;
-}
-
-void RectangleCollider::SetPosition(const Vector2& position) {
-    this->position = position;
 }
 
 void RectangleCollider::SetSize(const Vector2& size) {
