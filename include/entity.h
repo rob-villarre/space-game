@@ -5,7 +5,13 @@ class Entity {
 public:
     virtual void Update() = 0;
     virtual void Draw() = 0;
+    virtual void OnDestroy() {};
+    virtual void OnCollision(Entity& other) {};
     virtual ~Entity() = default;
+    void SetAlive(bool alive) { isAlive = alive; }
+    bool IsAlive() const { return isAlive; }
+private:
+    bool isAlive = true;
 };
 
 #endif

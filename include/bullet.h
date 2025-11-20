@@ -26,6 +26,7 @@ public:
 
     void Update() override;
     void Draw() override;
+    void OnCollision(Entity& other) override {};
 
     std::weak_ptr<Ship> GetOwner();
     Vector2 GetPosition();

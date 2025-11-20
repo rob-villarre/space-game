@@ -13,19 +13,23 @@ private:
     Vector2 velocity;
     float speed;
     float maxSpeed;
-    int childCount;
     float mass;
     float angle;
     float radius;
     float turnRate;
+    int childCount;
     std::shared_ptr<Texture2D> texture;
     std::unique_ptr<CircleCollider> collider;
 
 public:
     Asteroid(Vector2 position, float speed, float angle, float radius);
     ~Asteroid();
+
     void Update() override;
     void Draw() override;
+    void OnCollision(Entity& other) override;
+    void OnDestroy() override;
+
     float GetRadius();
     Vector2 GetPosition();
 

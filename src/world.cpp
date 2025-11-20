@@ -1,4 +1,5 @@
 #include "world.h"
+#include <algorithm>
 
 World& World::Instance() {
     static World instance;
@@ -39,39 +40,43 @@ void World::Update() {
 
 void World::CheckCollisions() {
     // Check bullet-asteroid collisions
-    for (auto bulletIt = bullets.begin(); bulletIt != bullets.end();) {
-        bool bulletErased = false;
+    for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); bulletIt++) {
         CircleCollider& bulletCollider = (*bulletIt)->GetCollider();
 
-        for (auto asteroidIt = asteroids.begin(); asteroidIt != asteroids.end() && !bulletErased;) {
+        int sizeBefore = asteroids.size();
+        for (auto asteroidIt = asteroids.begin(); asteroidIt != asteroids.end(); asteroidIt++) {
             CircleCollider& asteroidCollider = (*asteroidIt)->GetCollider();
 
             if (bulletCollider.CheckCollision(asteroidCollider)) {
-                float asteroidRadius = (*asteroidIt)->GetRadius();
-                Vector2 asteroidPos = (*asteroidIt)->GetPosition();
-
-                // Collision detected, erase both bullet and asteroid
-                asteroidIt = asteroids.erase(asteroidIt);
-                bulletIt = bullets.erase(bulletIt);
-                bulletErased = true;
-                
-                //make 2 new smaller asteroids if the asteroid is large enough
-                if (asteroidRadius > 10.0f) {
-                    float newRadius = asteroidRadius / 2.0f;
-                    World::Instance().Instantiate<Asteroid>(asteroidPos, 50.0f, GetRandomValue(0, 360), newRadius);
-                    World::Instance().Instantiate<Asteroid>(asteroidPos, 50.0f, GetRandomValue(0, 360), newRadius);
-                }
-                
-
-            } else {
-                ++asteroidIt;
+                (*asteroidIt)->SetAlive(false);
+                (*bulletIt)->SetAlive(false);
             }
         }
-
-        if (!bulletErased) {
-            ++bulletIt;
-        }
     }
+
+    size_t size = asteroids.size();
+    for (size_t i = 0; i < size; i++) {
+        Asteroid* asteroid = asteroids[i].get();
+        if (!asteroid->IsAlive()) {
+            asteroid->OnDestroy();
+        }
+    } 
+
+    // Remove destroyed asteroids
+    auto remove_it = std::remove_if(asteroids.begin(), asteroids.end(),
+        [](const std::unique_ptr<Asteroid>& asteroid) {
+            return !asteroid->IsAlive();
+        });
+
+    asteroids.erase(remove_it, asteroids.end());
+
+    // Remove destroyed bullets
+    auto remove_bullets_it = std::remove_if(bullets.begin(), bullets.end(),
+        [](const std::unique_ptr<Bullet>& bullet) {
+            return !bullet->IsAlive();
+        });
+
+    bullets.erase(remove_bullets_it, bullets.end());
 
     // Additional collision checks (e.g., ship-asteroid) can be added here
 }
