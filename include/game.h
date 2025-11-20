@@ -17,8 +17,6 @@ public:
   void UpdateDrawFrame();
 private:
   bool isRunning;
-  std::unique_ptr<Ship> ship;
-  std::unique_ptr<Asteroid> asteroid;
 };
 
 #endif

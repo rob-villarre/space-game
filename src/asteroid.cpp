@@ -1,13 +1,11 @@
 #include "asteroid.h"
 #include <cmath>
 
-Asteroid::Asteroid(Vector2 position, float speed, float angle, float size) : position(position), speed(speed), angle(angle), size(size) {
-    float speedScaler = 2.0f + (4.0f - size) / 4.0f;
+Asteroid::Asteroid(Vector2 position, float speed, float angle, float radius) : position(position), speed(speed), angle(angle), radius(radius) {
+    float speedScaler = 2.0f + (4.0f - radius) / 4.0f;
     maxSpeed = 60.0f * speedScaler;
 
     childCount = 3;
-
-    radius = size * 10.0f;
 
     mass = radius * radius * PI * 0.25f;
 

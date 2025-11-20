@@ -1,19 +1,20 @@
 #include "ship.h"
 #include "raylib.h"
 #include "bullet.h"
+#include "world.h"
 #include "resource_manager.h"
 #include <cmath>
 #include <algorithm>
 #include <iostream>
 
 Ship::Ship() {
-    texture = TextureManager::load(std::string("src/assets/kenneyshmup/Ships/ship_0000.png"));
-    thrustTexture = TextureManager::load(std::string("src/assets/kenneyshmup/Tiles/tile_0000.png"));
-    thrustSound = MusicManager::load(std::string("src/assets/sounds/thrust.mp3"));
+    texture = TextureManager::Load(std::string("src/assets/kenneyshmup/Ships/ship_0000.png"));
+    thrustTexture = TextureManager::Load(std::string("src/assets/kenneyshmup/Tiles/tile_0000.png"));
+    thrustSound = MusicManager::Load(std::string("src/assets/sounds/thrust.mp3"));
     thrustSound->looping = true;
     SetMusicVolume(*thrustSound.get(), 0.25f);
 
-    fireSound = SoundManager::load(std::string("src/assets/sounds/fire.mp3"));
+    fireSound = SoundManager::Load(std::string("src/assets/sounds/fire.mp3"));
     SetSoundVolume(*fireSound.get(), 0.25f);
 
     int screenWidth = GetScreenWidth();
@@ -53,20 +54,6 @@ void Ship::Update() {
         }
 
     }
-
-    // Update bullets
-    for (auto it = bullets.begin(); it != bullets.end();) {
-        (*it)->Update();
-        // Remove bullets that are off-screen
-        Vector2 bulletPos = (*it)->GetPosition();
-        if (bulletPos.x < -50 || bulletPos.x > GetScreenWidth() + 50 || 
-            bulletPos.y < -50 || bulletPos.y > GetScreenHeight() + 50) {
-            it = bullets.erase(it);
-        } else {
-            ++it;
-        }
-    }
-
 
     float drag = this->drag * dt;
     if (drag > std::abs(speed)) {
@@ -167,11 +154,6 @@ void Ship::Draw() {
         Vector2{(float)texture.width, (float)texture.height}, heading,
         WHITE
     );
-
-    // Draw bullets
-    for (const auto& bullet : bullets) {
-        bullet->Draw();
-    }
 }
 
 void Ship::FireBullet() {
@@ -183,9 +165,6 @@ void Ship::FireBullet() {
         position.y - std::cos(headingRad) * spawnOffset
     };
     
-    bullets.push_back(std::make_unique<Bullet>(bulletPos, heading, nullptr));
-}
 
-std::vector<std::unique_ptr<Bullet>>& Ship::GetBullets() {
-    return bullets;
+    World::Instance().Instantiate<Bullet>(bulletPos, heading, shared_from_this());
 }

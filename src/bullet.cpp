@@ -2,9 +2,9 @@
 #include "resource_manager.h"
 #include <cmath>
 
-Bullet::Bullet(Vector2 position, float heading, std::shared_ptr<Ship> owner) {
+Bullet::Bullet(Vector2 position, float heading, std::weak_ptr<Ship> owner) {
 
-    this->texture = TextureManager::load("src/assets/kenneyshmup/Tiles/tile_0000.png");
+    this->texture = TextureManager::Load("src/assets/kenneyshmup/Tiles/tile_0000.png");
 
     this->position = position;
     this->heading = heading;
@@ -41,6 +41,10 @@ void Bullet::Draw() {
         heading,
         WHITE
     );
+}
+
+std::weak_ptr<Ship> Bullet::GetOwner() {
+    return owner;
 }
 
 Vector2 Bullet::GetPosition() {

@@ -2,15 +2,16 @@
 #define BULLET_H
 
 #include "raylib.h"
+#include "entity.h"
 #include "ship.h"
 #include "circle_collider.h"
 #include <memory>
 
-class Bullet {
+class Bullet : public Entity {
 private:
     Vector2 position;
     float heading;
-    std::shared_ptr<Ship> owner;
+    std::weak_ptr<Ship> owner;
     std::shared_ptr<Texture2D> texture;
 
     float speed = 800.0f;
@@ -20,16 +21,16 @@ private:
     std::unique_ptr<CircleCollider> collider;
 
 public:
-    Bullet(Vector2 position, float heading, std::shared_ptr<Ship> owner);
+    Bullet(Vector2 position, float heading, std::weak_ptr<Ship> owner);
     ~Bullet();
 
-    void Update();
-    void Draw();
+    void Update() override;
+    void Draw() override;
 
+    std::weak_ptr<Ship> GetOwner();
     Vector2 GetPosition();
     float GetHeading();
     Rectangle GetRect();
-    void DrawHitbox(bool isColliding);
     CircleCollider& GetCollider();
 };
 

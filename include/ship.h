@@ -2,12 +2,13 @@
 #define SHIP_H
 
 #include "raylib.h"
+#include "entity.h"
 #include <memory>
 #include <vector>
 
 class Bullet;
 
-class Ship {
+class Ship : public Entity, public std::enable_shared_from_this<Ship> {
   private:
     std::shared_ptr<Texture2D> texture;
     std::shared_ptr<Texture2D> thrustTexture;
@@ -44,10 +45,8 @@ class Ship {
     Ship();
     ~Ship();
 
-    void Update();
-    void Draw();
-
-    std::vector<std::unique_ptr<Bullet>>& GetBullets();
+    void Update() override;
+    void Draw() override;
 
 };
 

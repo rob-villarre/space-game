@@ -20,8 +20,8 @@ public:
 
     ~ResourceManager() {}
 
-    static std::shared_ptr<T> load(const std::string &filename) {
-        auto& manager = instance();
+    static std::shared_ptr<T> Load(const std::string &filename) {
+        auto& manager = Instance();
 
         // Already loaded?
         auto it = manager.resources.find(filename);
@@ -51,7 +51,7 @@ public:
         return ptr;
     }
 
-    static ResourceManager& instance() {
+    static ResourceManager& Instance() {
         static ResourceManager manager;
         return manager;
     }

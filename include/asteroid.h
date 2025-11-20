@@ -2,11 +2,12 @@
 #define ASTEROID_H
 
 #include "raylib.h"
+#include "entity.h"
 #include "circle_collider.h"
 #include <memory>
 #include <tuple>
 
-class Asteroid {
+class Asteroid : public Entity {
 private:
     Vector2 position;
     Vector2 velocity;
@@ -14,18 +15,17 @@ private:
     float maxSpeed;
     int childCount;
     float mass;
-    float radius;
     float angle;
+    float radius;
     float turnRate;
-    int size;
     std::shared_ptr<Texture2D> texture;
     std::unique_ptr<CircleCollider> collider;
 
 public:
-    Asteroid(Vector2 position, float speed, float angle, float size);
+    Asteroid(Vector2 position, float speed, float angle, float radius);
     ~Asteroid();
-    void Update();
-    void Draw();
+    void Update() override;
+    void Draw() override;
     float GetRadius();
     Vector2 GetPosition();
 
