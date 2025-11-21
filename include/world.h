@@ -14,6 +14,8 @@ public:
 
     static World& Instance();
 
+    void Initialize();
+
     void Draw();
 
     void Update();
@@ -35,7 +37,7 @@ public:
     }
     
 private:
-    World() {}
+    World() {};
     World(const World&) = delete;
     World(World&&) = delete;
     World& operator=(const World&) = delete;

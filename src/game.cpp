@@ -17,8 +17,7 @@ Game::Game(Vector2 initScreenSize) {
     InitWindow(initScreenSize.x, initScreenSize.y, "Space Game");
     InitAudioDevice();
 
-    World::Instance().Instantiate<Ship>();
-    World::Instance().Instantiate<Asteroid>(Vector2{GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f}, 20.0f, 30.0f, 100.0f);
+    World::Instance().Initialize();
 };
 
 Game::~Game() {};

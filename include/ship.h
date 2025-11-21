@@ -3,6 +3,7 @@
 
 #include "raylib.h"
 #include "entity.h"
+#include "circle_collider.h"
 #include <memory>
 #include <vector>
 
@@ -25,7 +26,7 @@ class Ship : public Entity, public std::enable_shared_from_this<Ship> {
     const std::vector<float> turnRateRange = { -180.0, 180.0 };
     const float maxSpeed = 240.0;
     const float drag = 80.0;
-    const float radius = 20.0;
+    const float radius = 25.0;
     const float mass = 300.0;
 
     float thrustFlameLength = 0.5f;
@@ -35,9 +36,10 @@ class Ship : public Entity, public std::enable_shared_from_this<Ship> {
     float fadeTimer = 0.0f;
     const float fadeTime = 0.3f;
 
-    std::vector<std::unique_ptr<Bullet>> bullets;
     float lastFireTime = 0.0f;
     const float fireRate = 0.4f;
+
+    std::unique_ptr<CircleCollider> collider;
 
     void FireBullet();
 
@@ -47,6 +49,8 @@ class Ship : public Entity, public std::enable_shared_from_this<Ship> {
 
     void Update() override;
     void Draw() override;
+
+    CircleCollider& GetCollider();
 
 };
 

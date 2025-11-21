@@ -6,6 +6,12 @@ World& World::Instance() {
     return instance;
 }
 
+void World::Initialize() {
+    World::Instance().Instantiate<Ship>();
+    World::Instance().Instantiate<Asteroid>(Vector2{GetScreenWidth() / 4.0f, GetScreenHeight() / 4.0f}, 20.0f, 30.0f, 100.0f);
+}
+
+
 void World::Draw() {
     if (ship) {
         ship->Draw();
@@ -43,24 +49,37 @@ void World::CheckCollisions() {
     for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); bulletIt++) {
         CircleCollider& bulletCollider = (*bulletIt)->GetCollider();
 
-        int sizeBefore = asteroids.size();
-        for (auto asteroidIt = asteroids.begin(); asteroidIt != asteroids.end(); asteroidIt++) {
-            CircleCollider& asteroidCollider = (*asteroidIt)->GetCollider();
+        size_t asteroidsSize = asteroids.size();
+        for (size_t i = 0; i < asteroidsSize; i++) {
+            Asteroid* asteroid = asteroids[i].get();
 
+            CircleCollider& asteroidCollider = asteroid->GetCollider();
             if (bulletCollider.CheckCollision(asteroidCollider)) {
-                (*asteroidIt)->SetAlive(false);
+                asteroid->SetAlive(false);
                 (*bulletIt)->SetAlive(false);
+                asteroid->OnDestroy();
+                break;
             }
         }
     }
 
-    size_t size = asteroids.size();
-    for (size_t i = 0; i < size; i++) {
-        Asteroid* asteroid = asteroids[i].get();
-        if (!asteroid->IsAlive()) {
-            asteroid->OnDestroy();
+    // Check ship-asteroid collisions
+    if (ship) {
+        CircleCollider& shipCollider = ship->GetCollider();
+        for (const auto& asteroid : asteroids) {
+            CircleCollider& asteroidCollider = asteroid->GetCollider();
+            if (shipCollider.CheckCollision(asteroidCollider)) {
+                ship->SetAlive(false);
+                // Handle ship destruction (e.g., end game, respawn, etc.)
+                break;
+            }
         }
-    } 
+    }
+
+    if (ship && !ship->IsAlive()) {
+        // Handle ship destruction logic here if needed
+        ship.reset();
+    }
 
     // Remove destroyed asteroids
     auto remove_it = std::remove_if(asteroids.begin(), asteroids.end(),

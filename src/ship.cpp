@@ -22,6 +22,10 @@ Ship::Ship() {
     int textureWidth = texture->width;
     int textureHeight = texture->height;
     position = {screenWidth/2.0f - (textureWidth*4.0f)/2.0f, screenHeight/2.0f - (textureHeight*4.0f)/2.0f};
+
+    collider = std::make_unique<CircleCollider>(position, radius);
+    collider->SetLayer(CollisionLayer::SHIP);
+    collider->SetMask(static_cast<uint32_t>(CollisionLayer::ASTEROID));
 }
 
 Ship::~Ship() {}
@@ -116,6 +120,8 @@ void Ship::Update() {
 
     UpdateMusicStream(thrustSound);
 
+    collider->SetPosition(position);
+
 }
 
 void Ship::Draw() {
@@ -167,4 +173,8 @@ void Ship::FireBullet() {
     
 
     World::Instance().Instantiate<Bullet>(bulletPos, heading, shared_from_this());
+}
+
+CircleCollider& Ship::GetCollider() {
+    return *collider;
 }
