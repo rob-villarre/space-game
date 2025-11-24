@@ -4,31 +4,29 @@
 #include "collider.h"
 #include "raylib.h"
 
-class RectangleCollider: public Collider {
-private:
-    Vector2 size;
-    float rotation;
+class RectangleCollider : public Collider {
+ private:
+  Vector2 size;
+  float rotation;
 
-protected:
-    bool CollidesWith(const CircleCollider& circle) const override;
-    bool CollidesWith(const RectangleCollider& rect) const override;
+ protected:
+  bool CollidesWith(const CircleCollider &circle) const override;
+  bool CollidesWith(const RectangleCollider &rect) const override;
 
+ public:
+  RectangleCollider(Vector2 position, Vector2 size, float rotation = 0.0f);
 
-public:
-    RectangleCollider(Vector2 position, Vector2 size, float rotation = 0.0f);
+  bool CheckCollision(const Collider &other) const override;
 
-    bool CheckCollision(const Collider& other) const override;
+  void DebugDraw(bool isColliding) const override;
 
-    void DebugDraw(bool isColliding) const override;
+  Rectangle GetRect() const;
 
-    Rectangle GetRect() const;
+  Vector2 GetSize() const;
+  float GetRotation() const;
 
-    Vector2 GetSize() const;
-    float GetRotation() const;
-
-    void SetSize(const Vector2& size);
-    void SetRotation(float rotation);
-
+  void SetSize(const Vector2 &size);
+  void SetRotation(float rotation);
 };
 
 #endif

@@ -1,10 +1,9 @@
-#include "raylib.h"
 #include "game.h"
+#include "raylib.h"
 
 int main() {
+  Game game({1600, 900});
+  game.Start();
 
-    Game game({1600, 900});
-    game.Start();
-
-    return 0;
+  return 0;
 }

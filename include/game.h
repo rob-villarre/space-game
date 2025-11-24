@@ -1,13 +1,16 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "raylib.h"
-#include "ship.h"
-#include "asteroid.h"
 #include <memory>
 
+#include "asteroid.h"
+#include "raylib.h"
+#include "ship.h"
+
+enum class GameState { MENU, PLAYING, PAUSED, GAMEOVER };
+
 class Game {
-public:
+ public:
   Game(Vector2 initScreenSize);
   ~Game();
   void Start();
@@ -15,8 +18,15 @@ public:
   void CheckCollisions();
   void Draw();
   void UpdateDrawFrame();
-private:
+
+  void Menu();
+  void Paused();
+  void GameOver();
+  void Playing();
+
+ private:
   bool isRunning;
+  GameState gameState;
 };
 
 #endif

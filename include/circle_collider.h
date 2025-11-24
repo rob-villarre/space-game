@@ -4,25 +4,23 @@
 #include "collider.h"
 #include "raylib.h"
 
-class CircleCollider: public Collider {
-private:
-    float radius;
+class CircleCollider : public Collider {
+ private:
+  float radius;
 
-protected:
-    bool CollidesWith(const CircleCollider& circle) const override;
-    bool CollidesWith(const RectangleCollider& rect) const override;
+ protected:
+  bool CollidesWith(const CircleCollider &circle) const override;
+  bool CollidesWith(const RectangleCollider &rect) const override;
 
-public:
+ public:
+  CircleCollider(Vector2 position, float radius);
 
-    CircleCollider(Vector2 position, float radius);
+  bool CheckCollision(const Collider &other) const override;
+  void DebugDraw(bool isColliding) const override;
 
-    bool CheckCollision(const Collider& other) const override;
-    void DebugDraw(bool isColliding) const override;
+  float GetRadius() const;
 
-    float GetRadius() const;
-    
-    void SetRadius(float radius);
-
+  void SetRadius(float radius);
 };
 
 #endif
